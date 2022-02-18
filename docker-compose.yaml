@@ -2,11 +2,38 @@ version: "3.3"
 
 services:
 
-  fastapi:
-    image: tuffgniuz/chefeed
-    ports:
-      - 80:80
-
   mongodb:
     image: mongo:4.4.12
+    container_name: mongodb
+    hostname: mongodb
+    volumes:
+      - ./.mongodb/data/db/:/data/db/
+    #   - ./.mongodb/mongod.conf:/etc/mongod.conf
+    #   - ./.mongodb/initdb.d/:/docker-entrypoint-initdb.d/
+    #   - ./.mongodb/data/log/:/var/log/mongodb/
+    env_file:
+      - .env
+    environment:
+      # MONGO_INITDB_ROOT_USERNAME: root       
+      # MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    #   MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    ports:
+      - 27017:27017
+    # command: ["-f", "/etc/mongod.conf"]
     restart: always
+
+  # build the application
+  app:
+    build: .
+    container_name: chefeed-api
+    volumes:
+      - .:/src
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - 8000:8000
+    restart: on-failure
+    # depends_on:
+    #   - mongodb
+
