@@ -1,44 +1,36 @@
-from pydantic import BaseModel, EmailStr, Field
+import uuid
 
-# TODO: add password
+from typing import Optional
+from bson.objectid import ObjectId
+from pydantic import BaseModel, Field, EmailStr
 
 
 class UserSchema(BaseModel):
-    """
-    Schema for User object 
-
-    Attributes
-    ----------
-    firstname: str
-        firstname of the user
-    lastname: str
-        lastname of the user
-    email: EmailStr
-        email of user (used to authenticate)
-    """
-    firstname: str = Field(...)
-    lastname: str = Field(...)
+    id: str = Field(default_factory=uuid.uuid4, alias='_id')
+    name: str = Field(...)
     email: EmailStr = Field(...)
 
     class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
         schema_extra = {
             'example': {
-                'firstname': 'Jane',
-                'lastname': 'Doe',
-                'email': 'john@doe.com'
+                'name': 'Jane Doe',
+                'email': 'jdoe@example.com'
             }
         }
 
 
-def ResponseModel(data, message):
-    return {
-        'data': [data],
-        'code': 200,
-        'message': message
-    }
+class UserUpdateSchema(BaseModel):
+    name: Optional[str]
+    email: Optional[EmailStr]
 
-
-def ErrorResponseModel(error, code, message):
-    return {
-        'error': error, 'code': code, 'message': message
-    }
+    class Config:
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
+        schema_extra = {
+            'example': {
+                'name': "Jane Doe",
+                'email': 'jdoe@example.com'
+            }
+        }
