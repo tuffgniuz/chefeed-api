@@ -15,7 +15,7 @@ class IngridientsSchema(BaseModel):
     updated_at:date = Field(...)
     icon: str = Field(...)
 
-    class config:
+    class Config:
         allow_population_by_field_name = True
         arbitrary_types_allowed = True
         schema_extra = {

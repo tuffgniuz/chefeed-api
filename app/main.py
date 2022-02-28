@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from .api.api_v1.endpoints.user import router as UserRouter
+from .api.api_v1.endpoints.recipe import router as RecipeRouter
 from .config import settings
 
 app = FastAPI()
@@ -21,3 +22,4 @@ async def shutdown_db_client():
 
 
 app.include_router(UserRouter)
+app.include_router(RecipeRouter)
