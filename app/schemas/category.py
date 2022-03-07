@@ -12,10 +12,10 @@ class CategorySchema(BaseModel):
     category_name: str = Field(...)
     description: str = Field(...)
     created_at: date = Field(...)
-    udpated_at: date = Field(...)
-    recipe: array = Field(...)
+    udpated_at: Optional[date]
+    recipe: Optional[list]
     
-    class config:
+    class Config:
         allow_population_by_field_name = True
         arbitrary_types_allowed = True
         schema_extra = {
@@ -23,8 +23,6 @@ class CategorySchema(BaseModel):
                 'category_name':'Vegetables',
                 'description':'Healthy Vegetables Food',
                 'created_at': '2022-02-27',
-                'updated_at': '',
-                'recipe': ["id","id2","id3"] #reference approach
             }
         }
 
@@ -33,10 +31,9 @@ class UpdateCategorySchema(BaseModel):
     description = Optional[str]
     created_at = Optional[date]
     updated_at = Optional[date]
-    #recipe(I do not think this is changing)
 
-    class config:
-        allow_population_by_field_name = True
+    class Config:
+        arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
         schema_extra = {
             'example':{

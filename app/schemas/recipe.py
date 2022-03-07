@@ -20,7 +20,7 @@ class RecipeSchema(BaseModel):
     bookmarks: Optional[list] #(Dictionary,Json,EMBEDDED,REFRENCE)
 
 
-    class Config:
+    class Config: 
         allow_population_by_field_name = True
         arbitrary_types_allowed = True
         schema_extra = {
@@ -29,8 +29,8 @@ class RecipeSchema(BaseModel):
                 'description':'Very Yummy Mushroom Pizza',
                 'cooking_time': 10,
                 'attachment': 'mushroompizza.jpg',
-                'create_at':'2022-02-26'
-            }
+                'create_at': date.today()
+            } #Schema 
         }
     
 class RecipeUpdateSchema(BaseModel):
@@ -53,11 +53,7 @@ class RecipeUpdateSchema(BaseModel):
             'description':'Very Yummy Mushroom Pizza',
             'cooking_time': 10,
             'attachment': 'mushroompizza.jpg',
-            'create_at':'2022-02-26',
-            'update_at':'',
-            'Category' : ["category_id","category_id2"],
-            'Ingridients' : ["ingridients_id","ingridients_id2"],
-            'Bookmarks' : ["bookmarks_id","bookmarks_id2"],
+            'updated_at': date.today()
         }
     }
 

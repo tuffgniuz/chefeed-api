@@ -5,7 +5,7 @@ from fastapi.param_functions import Body
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from ....schemas.recipe import RecipeSchema
+from ....schemas.recipe import RecipeSchema, RecipeUpdateSchema
 # from ....config.settings import database as db
 
 
@@ -41,6 +41,24 @@ async def delete_recipe(id: str, request: Request):
     if delete_recipe.deleted_count == 1:
         return "Recipe has been successfully deleted"
     raise HTTPException(status_code=404, detail=f"Recipe with {id} is not found")
+
+"""UPDATE BY ID"""
+@router.put('/{id}', response_description='Update a Receipe')
+async def update_recipe(id: str, request:Request, recipe: RecipeUpdateSchema = Body(...)):
+    recipe = {k:v for k,v in recipe.dict().items() if v is not None}
+    if len(recipe) >= 1:
+        update_result = await request.app.mongodb['recipes'].update_one({'_id':id},{'$set': recipe})
+
+        if update_result.modified_count == 1:
+            if updated_recipe := await request.app.mongodb['recipes'].find_one({'_id': id}) is not None:
+                return updated_recipe
+
+    if (existing_recipe:= await request.app.mongodb['recipes'].find_one({'_id': id})) is not None:
+        return existing_recipe
+    
+    raise HTTPException(status_code=404, detail=f'Recipe {id} not found')
+
+
 
 
 

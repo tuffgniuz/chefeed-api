@@ -9,16 +9,15 @@ class BookmarksSchema(BaseModel):
     id: str = Field(default_factory=uuid.uuid4, alias='_id')
     name: str = Field(...)
     created_at: date = Field(...)
-    updated_at: date = Field(...)
+    updated_at: Optional[date]
 
-    class config:
+    class Config:
         allow_population_by_field_name = True
         arbitrary_types_allowed = True
         schema_extra = {
             'example':{
                 'name':'My Bookmark',
-                'created_at':'2022-02-27',
-                'updated_at':''
+                'created_at': date.today()
             }
         }
 
@@ -27,13 +26,12 @@ class UpdateBookmarksSchema(BaseModel):
     created_at = Optional[date]
     updated_at = Optional[date]
 
-    class config:
+    class Config:
         arbitrary_types_allowed = True
         json_encoders = {ObjectId: str}
         schema_extra = {
             'example':{
                 'name':'My Bookmark',
-                'created_at':'2022-02-27',
-                'updated_at':''
+                'updated_at': date.today()
             }
         }

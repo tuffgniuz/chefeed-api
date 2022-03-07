@@ -22,16 +22,15 @@ class ReviewSchema(BaseModel):
             'example':{
                 'subject':'This Pizza is very delicious',
                 'description':'I tried to cook mushroom pizza, recipe was well written and everything is just nice',
-                'created_at':'2022-02-27',
-                'updated_at': ''
+                'created_at': date.today()
             }
         }
 
 class UpdateReviewSchema(BaseModel):
     subject = Optional[str]
     description = Optional[str]
-    created_at = Optional[str]
-    updated_at = Optional[str]
+    created_at = Optional[date]
+    updated_at = Optional[date]
 
     class config:
         arbitrary_types_allowed = True
@@ -40,8 +39,7 @@ class UpdateReviewSchema(BaseModel):
             'example':{
                 'subject':'This Pizza is very delicious',
                 'description':'I tried to cook mushroom pizza, recipe was well written and everything is just nice',
-                'created_at':'2022-02-27',
-                'updated_at': ''
+                'updated_at': date.today()
             }
         }
         
