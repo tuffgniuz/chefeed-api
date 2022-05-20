@@ -5,7 +5,7 @@ from fastapi.param_functions import Body
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from ....schemas.ingredients import IngredientsSchema
+from ....schemas.ingredients import IngredientsSchema, UpdateIngredientsSchema
 
 router = APIRouter(prefix= '/api/v1/ingredients',tags=['ingredients'])
 
@@ -39,3 +39,6 @@ async def delete_ingredients(id: str, request: Request):
     if delete_ingredient.deleted_count == 1:
         return "Ingredients has been successfully deleted"
     raise HTTPException(status_code=404, detail=f"Ingredients with {id} is not found")
+
+
+"""UPDATE BY ID"""

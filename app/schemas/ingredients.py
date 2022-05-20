@@ -36,7 +36,7 @@ class UpdateIngredientsSchema(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             'example':{
-                'name' : 'Sugar',
+                'name' : '',
                 'updated_at': date.today(),
             }
         }

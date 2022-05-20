@@ -1,11 +1,16 @@
-from array import array
-from multiprocessing.dummy import Array
+#from array import array
+#from multiprocessing.dummy import Array
 import uuid
 
-from typing import Optional
+from typing import Optional,List
 from bson.objectid import ObjectId
 from pydantic import BaseModel, Field
 from datetime import date 
+
+class IngredientsSchema(BaseModel):
+    name: str 
+    icon: str
+
 
 class RecipeSchema(BaseModel):
     id: str = Field(default_factory=uuid.uuid4, alias='_id')
@@ -13,11 +18,8 @@ class RecipeSchema(BaseModel):
     description: str = Field(...)
     cooking_time: int = Field(...)
     attachment: str = Field(...)
-    create_at: date = Field(...)
-    update_at: Optional[date]
-    category: Optional[list] #(Dictionary,Json,EMBEDDED,REFRENCE)
-    ingridient: Optional[list]  #(Dictionary,JSON,EMBEDDED,REFERENCE)
-    bookmarks: Optional[list] #(Dictionary,Json,EMBEDDED,REFRENCE)
+    Category: List[str] = [] #(list,Json,EMBEDDED,REFRENCE)
+    Ingredients: List[IngredientsSchema] = [] #(list,JSON,EMBEDDED,REFERENCE)
 
 
     class Config: 
@@ -25,11 +27,15 @@ class RecipeSchema(BaseModel):
         arbitrary_types_allowed = True
         schema_extra = {
             'example':{
-                'title':'Mushroom Pizza',
-                'description':'Very Yummy Mushroom Pizza',
-                'cooking_time': 10,
-                'attachment': 'mushroompizza.jpg',
-                'create_at': date.today()
+                'title':'',
+                'description':'',
+                'cooking_time': 0,
+                'attachment': '',
+                'category' : [],
+                'ingredients' : [
+                    {'name' : '',
+                    'icon': ''}
+                ]
             } #Schema 
         }
     
@@ -40,20 +46,21 @@ class RecipeUpdateSchema(BaseModel):
     attachment: Optional[str]
     create_at: Optional[date]
     update_at: Optional[date]
-    #Category: Optional[array]
-    #ingridients: Optional[array]
-    #Bookmarks: Optional[array]
+    Category: Optional[list]
+    Ingridients: Optional[list]
+
 
     class Config:
             arbitrary_types_allowed = True
             json_encoders = {ObjectId: str}
             schema_extra = {
         'example':{
-            'title':'Mushroom Pizza',
-            'description':'Very Yummy Mushroom Pizza',
-            'cooking_time': 10,
-            'attachment': 'mushroompizza.jpg',
-            'updated_at': date.today()
+            'title':'',
+            'description':'',
+            'cooking_time': 0,
+            'attachment': '',
+            'Category' : [],
+            'Ingredients' : []
         }
     }
 

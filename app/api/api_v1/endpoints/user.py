@@ -19,12 +19,27 @@ async def retrieve_users(request: Request):
     return users
 
 
+@router.get("/{id}", response_description="Get user by id")
+async def retrieve_user_by_id(id: str, request: Request):
+    user = await request.app.mongodb["users"].find_one({"_id": id})
+    if user is not None:
+        return user
+    raise HTTPException(status_code=404, detail=f"User with {id} is not found")
+
+
 @router.post('/', response_description='Add new user', response_model=UserSchema)
 async def create_user(request: Request, user: UserSchema = Body(...)):
     user = jsonable_encoder(user)
     new_user = await request.app.mongodb['users'].insert_one(user)
     created_user = await request.app.mongodb['users'].find_one({'_id': new_user.inserted_id})
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_user)
+
+@router.delete("/{id}", response_description="Delete User")
+async def delete_user(id: str, request: Request):
+    delete_user = await request.app.mongodb["users"].delete_one({"_id": id})
+    if delete_user.deleted_count == 1:
+        return "User has been successfully deleted"
+    raise HTTPException(status_code=404, detail=f"User with {id} is not found")
 
 
 @router.put('/{id}', response_description='Update a user')

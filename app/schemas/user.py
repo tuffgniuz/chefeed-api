@@ -12,8 +12,6 @@ class UserSchema(BaseModel):
     email: EmailStr = Field(...)
     biography: Optional[str]
     date_of_birth: date = Field(...)
-    created_at: date.today()
-    updated_at: Optional[date]
 
 
 
@@ -24,7 +22,8 @@ class UserSchema(BaseModel):
             'example': {
                 'name': 'Jane Doe',
                 'email': 'jdoe@example.com',
-                'biography': 'I am Jane doe'
+                'biography': 'I am Jane doe',
+                'date_of_birth': ''
             }
         }
 
@@ -40,7 +39,10 @@ class UserUpdateSchema(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             'example': {
-                'name': "Jane Doe",
-                'email': 'jdoe@example.com'
+                'name': 'Jane Doe',
+                'email': 'jdoe@example.com',
+                'biography': 'I am Jane doe',
+                'date_of_birth': '',
+                'updated_at': date.today()
             }
         }
