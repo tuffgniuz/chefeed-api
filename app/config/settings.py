@@ -3,7 +3,7 @@ from fastapi_users.db import MongoDBUserDatabase
 from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import dotenv_values
 
-from app.schemas.user import UserDisplay
+# from app.schemas.user import UserDisplay
 
 config = dotenv_values('.env')
 
