@@ -20,9 +20,8 @@ class ReviewSchema(BaseModel):
         arbitrary_types_allowed = True
         schema_extra = {
             'example':{
-                'subject':'This Pizza is very delicious',
-                'description':'I tried to cook mushroom pizza, recipe was well written and everything is just nice',
-                'created_at': date.today()
+                'subject':'str',
+                'description':'str'
             }
         }
 
@@ -37,9 +36,8 @@ class UpdateReviewSchema(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             'example':{
-                'subject':'This Pizza is very delicious',
-                'description':'I tried to cook mushroom pizza, recipe was well written and everything is just nice',
-                'updated_at': date.today()
+                'subject':'str',
+                'description':'str'
             }
         }
         

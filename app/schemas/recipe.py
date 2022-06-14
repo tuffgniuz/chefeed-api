@@ -1,5 +1,3 @@
-#from array import array
-#from multiprocessing.dummy import Array
 import uuid
 
 from typing import Optional,List
@@ -7,9 +5,20 @@ from bson.objectid import ObjectId
 from pydantic import BaseModel, Field
 from datetime import date 
 
+class ReviewSchema(BaseModel):
+    subject: str
+    description: str
+    created_date: date = Field(...)
+    updated_date: Optional[date] = Field(...)
+
+
 class IngredientsSchema(BaseModel):
     name: str 
-    icon: str
+    amount: int
+    measurement: str
+
+class CategorySchema(BaseModel):
+    categoryname: str
 
 
 class RecipeSchema(BaseModel):
@@ -18,8 +27,9 @@ class RecipeSchema(BaseModel):
     description: str = Field(...)
     cooking_time: int = Field(...)
     attachment: str = Field(...)
-    Category: List[str] = [] #(list,Json,EMBEDDED,REFRENCE)
-    Ingredients: List[IngredientsSchema] = [] #(list,JSON,EMBEDDED,REFERENCE)
+    Category: List[CategorySchema]
+    Ingredients: List[IngredientsSchema]
+    Review: Optional[List[ReviewSchema]]
 
 
     class Config: 
@@ -31,12 +41,10 @@ class RecipeSchema(BaseModel):
                 'description':'',
                 'cooking_time': 0,
                 'attachment': '',
-                'category' : [],
-                'ingredients' : [
-                    {'name' : '',
-                    'icon': ''}
-                ]
-            } #Schema 
+                'Category' :[],
+                'Ingredients' : [],
+                'Review':[]
+            } 
         }
     
 class RecipeUpdateSchema(BaseModel):
@@ -60,7 +68,8 @@ class RecipeUpdateSchema(BaseModel):
             'cooking_time': 0,
             'attachment': '',
             'Category' : [],
-            'Ingredients' : []
+            'Ingredients' : [],
+            'Review':[]
         }
     }
 

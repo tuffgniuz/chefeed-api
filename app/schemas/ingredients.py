@@ -1,4 +1,3 @@
-#from array import array
 from multiprocessing.dummy import Array
 #from tkinter import BitmapImage
 import uuid
@@ -6,13 +5,13 @@ import uuid
 from typing import Optional
 from bson.objectid import ObjectId
 from pydantic import BaseModel, Field
-from datetime import date 
+
 
 class IngredientsSchema(BaseModel):
     id: str = Field(default_factory=uuid.uuid4, alias='_id')
     name : str = Field(...)
-    created_at: date = Field(...)
-    updated_at: Optional[date]
+    measurement : str = Field(...)
+    amount: int = Field(...)
     icon: Optional[str]
 
     class Config:
@@ -20,15 +19,17 @@ class IngredientsSchema(BaseModel):
         arbitrary_types_allowed = True
         schema_extra = {
             'example':{
-                'name' : 'Sugar',
-                'created_at': date.today(),
+                'name' : 'str',
+                'measurement': 'str',
+                'amount':'',
+                'icon':'str',
                 }
             }
 
 class UpdateIngredientsSchema(BaseModel):
     name = Optional[str]
-    created_at = Optional[date]
-    updated_at = Optional[date]
+    measurement = Optional[str]
+    amount = Optional[int]
     icon = Optional[str]
 
     class Config:
@@ -36,7 +37,9 @@ class UpdateIngredientsSchema(BaseModel):
         json_encoders = {ObjectId: str}
         schema_extra = {
             'example':{
-                'name' : '',
-                'updated_at': date.today(),
+                'name' : 'Sugar',
+                'measurement': 'str',
+                'amount':'',
+                'icon':'str',
             }
         }

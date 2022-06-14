@@ -6,14 +6,13 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from ....schemas.user import UserSchema, UserUpdateSchema
-# from ....config.settings import database as db
 
 
 router = APIRouter(prefix='/api/v1/users', tags=['users'])
 
 
 @router.get('/', response_description='List all users', response_model=list[UserSchema])
-async def retrieve_users(request: Request):
+async def retrieve_users(request:Request):
     users = await request.app.mongodb['users'].find().to_list(1000)
 
     return users
@@ -33,6 +32,7 @@ async def create_user(request: Request, user: UserSchema = Body(...)):
     new_user = await request.app.mongodb['users'].insert_one(user)
     created_user = await request.app.mongodb['users'].find_one({'_id': new_user.inserted_id})
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_user)
+
 
 @router.delete("/{id}", response_description="Delete User")
 async def delete_user(id: str, request: Request):
