@@ -10,7 +10,7 @@ from starlette.responses import JSONResponse
 
 from ....schemas.recipe import RecipeSchema, RecipeUpdateSchema
 
-router = APIRouter(prefix='/api/v1/recipes', tags=['recipes'])
+router = APIRouter(prefix='/api/v1/recipes', tags=['Recipes'])
 
 
 """ RETRIEVE ALL """

@@ -8,7 +8,7 @@ from starlette.responses import JSONResponse
 from ....schemas.user import UserSchema, UserUpdateSchema
 
 
-router = APIRouter(prefix='/api/v1/users', tags=['users'])
+router = APIRouter(prefix='/api/v1/users', tags=['Users'])
 
 
 @router.get('/', response_description='List all users', response_model=list[UserSchema])
