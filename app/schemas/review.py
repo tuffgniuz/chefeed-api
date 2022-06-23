@@ -13,7 +13,7 @@ class ReviewSchema(BaseModel):
     subject: str = Field(...)
     description: str = Field(...)
     created_at: date = Field(...)
-    updated_at: date = Field(...)
+    updated_at: Optional[date]
 
     class config:
         allow_population_by_field_name = True
@@ -21,7 +21,8 @@ class ReviewSchema(BaseModel):
         schema_extra = {
             'example':{
                 'subject':'str',
-                'description':'str'
+                'description':'str',
+                'created_at': date.today()
             }
         }
 
@@ -37,7 +38,8 @@ class UpdateReviewSchema(BaseModel):
         schema_extra = {
             'example':{
                 'subject':'str',
-                'description':'str'
+                'description':'str',
+                'updated_at': date.today()
             }
         }
         

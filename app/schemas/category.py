@@ -10,7 +10,6 @@ from datetime import date
 class CategorySchema(BaseModel):
     id: str = Field(default_factory=uuid.uuid4, alias='_id')
     category_name: str = Field(...)
-    description: str = Field(...)
     
     class Config:
         allow_population_by_field_name = True
@@ -18,13 +17,11 @@ class CategorySchema(BaseModel):
         schema_extra = {
             'example':{
                 'category_name':'Vegetables',
-                'description':'Healthy Vegetables Food',
             }
         }
 
 class UpdateCategorySchema(BaseModel):
     category_name = Optional[str]
-    description = Optional[str]
 
     class Config:
         arbitrary_types_allowed = True
@@ -32,7 +29,6 @@ class UpdateCategorySchema(BaseModel):
         schema_extra = {
             'example':{
                 'category_name':'Vegetables',
-                'description':'Healthy Vegetables Food',
             }
         }
     

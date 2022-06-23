@@ -6,13 +6,12 @@ from fastapi.param_functions import Body
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 from ..schemas.user import TokenData, UserSchema
-from jose import JWTError,jwt
+from jose import JWTError, jwt
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
-from config.settings import py_db
+from ..config.settings import py_db
 from datetime import timedelta,datetime
 
-##
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 #For Hasing Passwords
@@ -33,7 +32,7 @@ def get_hash_password(user_password):
 #To get User
 def get_user(username:str):
 
-    result_from_query = py_db.find({'username':username},{'_id':False}) 
+    result_from_query = py_db["users"].find({'username':username},{'_id':False}) 
     final_result = list(result_from_query)
 
     if len(final_result) == 0:
@@ -50,7 +49,7 @@ def get_user(username:str):
             self.hash_password = hash_password
         
         response = Response(
-            user_dict["username"],
+            user_dict['username'],
             user_dict['email'],
             user_dict['hash_password']
         )
@@ -71,7 +70,7 @@ def create_access_token(data:dict, expires_delta: Optional[timedelta]=None):
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=20)
-    to_encode.update({"exp":expire})
+    to_encode.update({'exp':expire})
     
     encoded_jwt = jwt.encode(to_encode,SECRET_KEY,algorithm=ALGORITHM)
 

@@ -7,7 +7,7 @@ from starlette.responses import JSONResponse
 
 from ....schemas.ingredients import IngredientsSchema, UpdateIngredientsSchema
 
-router = APIRouter(prefix= '/api/v1/ingredients',tags=['ingredients'])
+router = APIRouter(prefix= '/api/v1/ingredients',tags=['Ingredients'])
 
 """ RETRIEVE ALL """
 @router.get('/', response_description='List all ingredients', response_model=list[IngredientsSchema])
