@@ -7,7 +7,7 @@ from starlette.responses import JSONResponse
 
 from ....schemas.category import CategorySchema
 
-router = APIRouter(prefix='/api/v1/categories', tags=['categories'])
+router = APIRouter(prefix='/api/v1/categories', tags=['Categories'])
 
 """RETRIEVE ALL CATEGORY"""
 

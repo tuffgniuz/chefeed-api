@@ -4,11 +4,13 @@ from fastapi.exceptions import HTTPException
 from fastapi.param_functions import Body
 from starlette.requests import Request
 from starlette.responses import JSONResponse
+from ....config.settings import py_db
 
 from ....schemas.user import UserSchema, UserUpdateSchema
+from ....schemas.bookmarks import BookmarksSchema
 
 
-router = APIRouter(prefix='/api/v1/users', tags=['users'])
+router = APIRouter(prefix='/api/v1/users', tags=['Users'])
 
 
 @router.get('/', response_description='List all users', response_model=list[UserSchema])
@@ -57,3 +59,26 @@ async def update_user(id: str, request: Request, user: UserUpdateSchema = Body(.
         return existing_user
 
     raise HTTPException(status_code=404, detail=f'user {id} not found')
+
+#@router.post('/{id}/{bookmark_name}', response_description="Add a bookmark")
+#async def add_bookmark(bookmark_name:str,request:Request,BookmarkSchema = Body(...)):
+
+
+"""SHOW USER FOLLOWERS"""
+#@router.get('/{id}/Follwers)
+
+
+"""SHOW USER FOLLOWING"""
+#@router.get('/{id}/Following)
+
+
+#REFERENCE JOIN
+
+def RecipeToUser(recipe_id:str,user_id:str):
+    recipe = py_db["users"].find({'_id' : recipe_id})
+    result = py_db["users"].update_one({'_id' : user_id},{'$push':{'recipes': recipe}})
+    return result
+
+
+    
+

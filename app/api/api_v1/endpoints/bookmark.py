@@ -1,18 +1,21 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException
 from fastapi.param_functions import Body
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from ....schemas.bookmarks import BookmarksSchema
-# from ....config.settings import database as db
+from app.schemas.user import UserSchema
+from ....loginmanager.loginmanager import get_current_active_user
 
-router = APIRouter(prefix='/api/v1/bookmarks',tags=['bookmarks'])
+from ....schemas.user import UserSchema
+from ....schemas.bookmarks import BookmarksSchema
+
+router = APIRouter(prefix='/api/v1/bookmarks',tags=['Bookmarks'])
 
 """RETRIEVE ALL BOOKMARKS"""
-@router.get('/',response_description='List all bookmarks' ,response_model=list[BookmarksSchema])
-async def retrieve_bookmarks(request:Request):
+@router.get('/',response_description='List all bookmarks' ,response_model=list[BookmarksSchema],)
+async def retrieve_bookmarks(request:Request, current_user: UserSchema = Depends(get_current_active_user)):
     bookmarks = await request.app.mongodb['bookmarks'].find().to_list(1000)
     return bookmarks
 
@@ -39,3 +42,5 @@ async def delete_bookmark(id:str, request:Request):
     if delete_bookmark.deleted_count == 1:
         return "Bookmarks has been successfully deleted"
     raise HTTPException(status_code=404,detail=f"Bookmark with {id} is not found")
+
+

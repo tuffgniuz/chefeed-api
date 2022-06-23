@@ -27,6 +27,8 @@ class RecipeSchema(BaseModel):
     description: str = Field(...)
     cooking_time: int = Field(...)
     attachment: str = Field(...)
+    create_at: date = Field(...)
+    update_at: Optional[date]
     Category: List[CategorySchema]
     Ingredients: List[IngredientsSchema]
     Review: Optional[List[ReviewSchema]]
@@ -42,8 +44,7 @@ class RecipeSchema(BaseModel):
                 'cooking_time': 0,
                 'attachment': '',
                 'Category' :[],
-                'Ingredients' : [],
-                'Review':[]
+                'Ingredients' : []
             } 
         }
     
@@ -68,8 +69,7 @@ class RecipeUpdateSchema(BaseModel):
             'cooking_time': 0,
             'attachment': '',
             'Category' : [],
-            'Ingredients' : [],
-            'Review':[]
+            'Ingredients' : []
         }
     }
 
