@@ -17,6 +17,7 @@ class UserSchema(BaseModel):
     id: str = Field(default_factory=uuid.uuid4, alias='_id')
     username: str = Field(...)
     email: EmailStr = Field(...)
+    password: str = Field(...)
     biography: Optional[str]
     date_of_birth: date  = Field(...)
     Bookmark : Optional[List[BookmarkSchema]]
@@ -31,6 +32,7 @@ class UserSchema(BaseModel):
             'example': {
                 'username': 'string',
                 'email': 'Email@example.com',
+                'password':'str',
                 'biography': 'Insert your Biography Here',
                 'date_of_birth': 'Insert date of birth here'
             }
