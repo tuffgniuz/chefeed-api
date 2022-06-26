@@ -16,40 +16,55 @@ from ....schemas.recipe import RecipeSchema, RecipeUpdateSchema, ReviewSchema
 router = APIRouter(prefix='/api/v1/recipes', tags=['Recipes'])
 
 
-""" RETRIEVE ALL """
-
-
 @router.get('/', response_description='List all recipes', response_model=list[RecipeSchema])
 async def retrieve_recipes(request: Request):
+    '''
+    Takes a request a returns the recipe collection
+        Parameters:
+            request (Request): 
+
+            Returns:
+                recipes (Request): request list of recipe collection                
+    '''
     recipes = await request.app.mongodb['recipes'].find().to_list(1000)
 
     return recipes
 
-""" RETRIEVE BY ID """
-
 
 @router.get("/{id}", response_description="Get recipe by id")
 async def retrieve_recipe_by_id(id: str, request: Request):
+    '''
+    Returns a single recipe from the recipe collection or raises an HTTPException
+        Paramaters:
+            id (str): the recipe id
+            request (Request): a HTTP request
+        Returns:
+            recipe (document): A single recipe document of given id
+
+    '''
     recipe = await request.app.mongodb["recipes"].find_one({"_id": id})
     if recipe is not None:
         return recipe
     raise HTTPException(
         status_code=404, detail=f"Recipe with {id} is not found")
 
-""" CREATE NEW """
 
-
-@router.post('/', response_description='Add new recipe', response_model=RecipeSchema)
+@router.post('/new', response_description='Add new recipe', response_model=RecipeSchema)
 async def create_recipe(request: Request, recipe: RecipeSchema = Body(...), current_user: UserSchema = Depends(get_current_active_user)):
+    '''
+    Returns a new recipe object
+        Parameters:
+            request (Request):
+            recipe (RecipeScheme):
+            current_user (UserSchema)
+    '''
     recipe = jsonable_encoder(recipe)
     new_recipe = await request.app.mongodb['recipes'].insert_one(recipe)
     created_recipe = await request.app.mongodb['recipes'].find_one({'_id': new_recipe.inserted_id})
     return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_recipe)
 
-""" DELETE BY ID """
 
-
-@router.delete("/{id}", response_description="Delete Recipe")
+@router.delete("/delete/{id}", response_description="Delete Recipe")
 async def delete_recipe(id: str, request: Request, current_user: UserSchema = Depends(get_current_active_user)):
     delete_recipe = await request.app.mongodb["recipes"].delete_one({"_id": id})
     if delete_recipe.deleted_count == 1:
@@ -57,10 +72,8 @@ async def delete_recipe(id: str, request: Request, current_user: UserSchema = De
     raise HTTPException(
         status_code=404, detail=f"Recipe with {id} is not found")
 
-"""UPDATE BY ID"""
 
-
-@router.put('/{id}', response_description='Update a Receipe')
+@router.put('/update/{id}', response_description='Update a Receipe')
 async def update_recipe(id: str, request: Request, recipe: RecipeUpdateSchema = Body(...), current_user: UserSchema = Depends(get_current_active_user)):
     recipe = {k: v for k, v in recipe.dict().items() if v is not None}
     if len(recipe) >= 1:
