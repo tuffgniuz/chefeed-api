@@ -2,51 +2,47 @@ from fastapi import APIRouter, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import HTTPException
 from fastapi.param_functions import Body
+from fastapi.params import Depends
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
-from ....schemas.category import CategorySchema
+from app.auth.login_manager import current_active_user
+from ....schemas.category import Category
 
 router = APIRouter(prefix='/api/v1/categories', tags=['Categories'])
 
-"""RETRIEVE ALL CATEGORY"""
 
-
-@router.get('/', response_description='List All Categories', response_model=list[CategorySchema])
-async def retrieve_category(request: Request):
-    categories = await request.app.mongodb['categories'].find().to_list(1000)
+@router.get('/', response_description='List All Categories')
+async def retrieve_category() -> list[Category]:
+    '''Return a list of all categories'''
+    # categories = await request.app.mongodb['categories'].find().to_list(1000)
+    categories = await Category.find().to_list()
     return categories
 
 
-"""RETRIEVE CATEGORY BY ID"""
+# @router.get("/{id}", response_description="Get cateogry by id")
+# async def retrieve_category_by_id(id: str, request: Request):
+#     '''Return a single category by given Id'''
+#     category = await request.app.mongodb["categories"].find_one({"_id": id})
+#     if category is not None:
+#         return category
+#     raise HTTPException(
+#         status_code=404, detail=f"Category with {id} is not found")
 
 
-@router.get("/{id}", response_description="Get cateogry by id")
-async def retrieve_category_by_id(id: str, request: Request):
-    category = await request.app.mongodb["categories"].find_one({"_id": id})
-    if category is not None:
-        return category
-    raise HTTPException(
-        status_code=404, detail=f"Category with {id} is not found")
+@router.post('/', response_description='Add new category')
+async def create_category(category: Category, current_user=Depends(current_active_user)):
+    '''Inserts a new category'''
+    # category = jsonable_encoder(category)
+    # new_category = await request.app.mongodb['categories'].insert_one(category)
+    # created_category = await request.app.mongodb['categories'].find_one({'_id': new_category.inserted_id})
+    # return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_category)
+    await category.create()
 
-
-"""CREATE NEW CATEGORY"""
-
-
-@router.post('/', response_description='Add new category', response_model=CategorySchema)
-async def create_category(request: Request, category: CategorySchema = Body(...)):
-    category = jsonable_encoder(category)
-    new_category = await request.app.mongodb['categories'].insert_one(category)
-    created_category = await request.app.mongodb['categories'].find_one({'_id': new_category.inserted_id})
-    return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_category)
-
-""" DELETE CATEGORY ID """
-
-
-@router.delete("/{id}", response_description="Delete category")
-async def delete_category(id: str, request: Request):
-    delete_category = await request.app.mongodb["categories"].delete_one({"_id": id})
-    if delete_category.deleted_count == 1:
-        return "Category has been successfully deleted"
-    raise HTTPException(
-        status_code=404, detail=f"Category with {id} is not found")
+# @router.delete("/{id}", response_description="Delete category")
+# async def delete_category(id: str, request: Request):
+#     delete_category = await request.app.mongodb["categories"].delete_one({"_id": id})
+#     if delete_category.deleted_count == 1:
+#         return "Category has been successfully deleted"
+#     raise HTTPException(
+#         status_code=404, detail=f"Category with {id} is not found")
