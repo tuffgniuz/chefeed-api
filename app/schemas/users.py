@@ -10,6 +10,8 @@ from app.schemas.recipe import Recipe
 
 
 class User(BeanieBaseUser[PydanticObjectId]):
+    avatar_url: Optional[str] = 'https://robohash.org/38'
+    name: str = Field(...)
     biography: Optional[str] = Field(max_length=300)
     recipes: List[Link[Recipe]] = []
     followers: List[Link['User']] = []
@@ -17,24 +19,26 @@ class User(BeanieBaseUser[PydanticObjectId]):
 
 
 class UserRead(schemas.BaseUser[PydanticObjectId]):
-    pass
+    avatar_url: Optional[str]
+    name: Optional[str]
+    biography: Optional[str]
+    recipes: List[Link[Recipe]]
+    followers: List[Link['User']]
+    following: List[Link['User']]
 
 
 class UserCreate(schemas.BaseUserCreate):
-    pass
+    name: str = Field(...)
 
     class Config:
         schema_extra = {
             'example': {
+                'name': 'Geniuz',
                 'email': 'tuffgniuz@dev.io',
                 'password': '123456',
             }
         }
 
 
-class UserUpdate(schemas.BaseUserUpdate):
-    recipes: Optional[List[Link[Recipe]]]
-    # pass
-
-
-# class UserPublicView(View):
+# class UserUpdate(schemas.BaseUserUpdate):
+#     recipes: Optional[List[Link[]]] = []

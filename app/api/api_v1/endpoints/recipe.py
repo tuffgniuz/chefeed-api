@@ -3,22 +3,10 @@ from beanie.odm.fields import PydanticObjectId, WriteRules
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
 from fastapi.param_functions import Depends
-from starlette.requests import Request
-# from fastapi.encoders import jsonable_encoder
-# from fastapi.exceptions import HTTPException
-# from fastapi.param_functions import Body
-# from pydantic import ValidationError
-# from starlette.requests import Request
-# from starlette.responses import JSONResponse
-
-# from ....config.settings import py_db
-# from ....loginmanager.loginmanager import get_current_active_user
-
-# from ....schemas.user import UserSchema
-# from ....schemas.recipe import RecipeSchema, RecipeUpdateSchema, ReviewSchema
 
 from app.auth.login_manager import current_active_user
 from app.schemas.recipe import Recipe
+from app.schemas.users import User
 
 
 router = APIRouter(prefix='/api/v1/recipes', tags=['Recipes'])
@@ -26,23 +14,20 @@ router = APIRouter(prefix='/api/v1/recipes', tags=['Recipes'])
 
 @router.get('/', response_description='List all recipes')
 async def retrieve_recipes() -> list[Recipe]:
-    # recipes = await request.app.mongodb['recipes'].find().to_list(1000)
     recipe_list = await Recipe.find().to_list()
 
     return recipe_list
 
 
-@router.post('/new', response_description='Add new recipe')
-async def create_recipe(recipe: Recipe, current_user=Depends(current_active_user)) -> dict:
-    # new_recipe = await request.app.mongodb['recipes'].insert_one(recipe)
-    # created_recipe = await request.app.mongodb['recipes'].find_one({'_id': new_recipe.inserted_id})
-    # return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_recipe)
-    # print(f'{current_user.id}')
-    # recipe.user = current_user.id
-    new_recipe = await recipe.create()
+@router.get('/user-recipes')
+async def user_recipes(user: User = Depends(current_active_user)):
+    await user.fetch_link(User.recipes)
 
-    query = await Recipe.find_one(Recipe.id == new_recipe.id)
-    await query.set({Recipe.user: current_user.id})
+    return user.recipes
+
+@router.post('/new', response_description='Add new recipe')
+async def create_recipe(recipe: Recipe, current_user=Depends(current_active_user)):
+    new_recipe = await recipe.create()
 
     current_user.recipes.append(new_recipe)
 

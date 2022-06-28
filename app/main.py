@@ -7,8 +7,7 @@ from app.schemas.ingredients import Ingredient
 from app.schemas.recipe import Recipe
 from app.schemas.users import User, UserCreate, UserRead
 from app.auth.auth_backend import auth_backend
-from app.auth.login_manager import fastapi_users, current_active_user
-# from motor.motor_asyncio import AsyncIOMotorClient
+from app.auth.login_manager import fastapi_users
 
 
 from .api.api_v1.endpoints.recipe import router as RecipeRouter
