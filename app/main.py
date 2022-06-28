@@ -5,6 +5,7 @@ from app.db import db
 from app.schemas.category import Category
 from app.schemas.ingredients import Ingredient
 from app.schemas.recipe import Recipe
+from app.schemas.review import Review
 from app.schemas.users import User, UserCreate, UserRead
 from app.auth.auth_backend import auth_backend
 from app.auth.login_manager import fastapi_users
@@ -41,7 +42,7 @@ app.include_router(
 async def on_startup():
     await init_beanie(
         database=db,
-        document_models=[User, Recipe, Ingredient, Category]
+        document_models=[User, Recipe, Ingredient, Category, Review]
     )
 
 # @app.on_event('startup')
