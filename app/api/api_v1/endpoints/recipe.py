@@ -1,4 +1,5 @@
 # import json
+from http import client
 from beanie.odm.fields import PydanticObjectId, WriteRules
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
@@ -9,7 +10,8 @@ from starlette.requests import Request
 # from fastapi.param_functions import Body
 # from pydantic import ValidationError
 # from starlette.requests import Request
-# from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse
+from pymongo import MongoClient
 
 # from ....config.settings import py_db
 # from ....loginmanager.loginmanager import get_current_active_user
@@ -21,7 +23,13 @@ from app.auth.login_manager import current_active_user
 from app.schemas.recipe import Recipe
 
 
+
 router = APIRouter(prefix='/api/v1/recipes', tags=['Recipes'])
+
+#For Aggregation Purposes
+client = MongoClient("mongodb://root:root@127.0.0.1:27017/")
+chefeed_db = client["chefeed-db"]
+recipes = chefeed_db["recipes"]
 
 
 @router.get('/', response_description='List all recipes')
@@ -41,8 +49,8 @@ async def create_recipe(recipe: Recipe, current_user=Depends(current_active_user
     # recipe.user = current_user.id
     new_recipe = await recipe.create()
 
-    query = await Recipe.find_one(Recipe.id == new_recipe.id)
-    await query.set({Recipe.user: current_user.id})
+    #query = await Recipe.find_one(Recipe.id == new_recipe.id)
+    #await query.set({Recipe.user: current_user.id})
 
     current_user.recipes.append(new_recipe)
 
@@ -65,6 +73,25 @@ async def update_recipe(id: PydanticObjectId, request: Recipe) -> Recipe:
     await recipe.update(update_query)
 
     return recipe
+
+@router.get("/{id}", response_description="Show Recipe")
+async def show_recipe(id:PydanticObjectId) -> Recipe:
+    recipe = await Recipe.find_one(Recipe.id==id,fetch_links=True)
+    if recipe is None:
+        raise HTTPException(status_code=404, detail='Recipe not found')
+    return recipe
+
+
+
+@router.get("/{id}/Reviews", response_description="Show Recipe Reviews")
+async def show_reviews_recipe(id:PydanticObjectId) -> Recipe:
+    recipe = await Recipe.find_one(Recipe.id==id,fetch_links=True)
+    recipe = recipe.reviews
+    if recipe is None:
+        return HTTPException(status_code=204, detail='No Reviews')
+    return recipe
+ 
+######
 
     # @router.get("/{id}", response_description="Get recipe by id")
     # async def retrieve_recipe_by_id(id: str, request: Request):
