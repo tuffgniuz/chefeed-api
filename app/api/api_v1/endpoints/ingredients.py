@@ -1,3 +1,5 @@
+from beanie import PydanticObjectId
+from beanie.odm.fields import WriteRules
 from fastapi import APIRouter, status
 from fastapi.params import Depends
 # from fastapi.encoders import jsonable_encoder
@@ -8,6 +10,7 @@ from fastapi.params import Depends
 
 from app.auth.login_manager import current_active_user
 from ....schemas.ingredients import Ingredient
+from ....schemas.recipe import Recipe
 
 router = APIRouter(prefix='/api/v1/ingredients', tags=['Ingredients'])
 
@@ -37,6 +40,16 @@ async def create_ingredient(ingredient: Ingredient, current_user=Depends(current
     # created_ingridient = await request.app.mongodb['ingredients'].find_one({'_id': new_ingredient.inserted_id})
     # return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_ingridient)
     await ingredient.create()
+
+
+@router.post('/{id}',response_description="Add Ingredients to Recipe")
+async def add_ingredients_to_recipe(id:PydanticObjectId, ingredients_id: PydanticObjectId, current_user = Depends(current_active_user)) -> dict:
+    recipe = await Recipe.get(id)
+    ingredients = await Ingredient.find_one(Ingredient.id == ingredients_id)
+    recipe.ingredients.append(ingredients)
+    await recipe.save(link_rule=WriteRules.WRITE)
+
+#
 
 # """ DELETE BY ID """
 # @router.delete("/{id}", response_description="Delete Ingredients")

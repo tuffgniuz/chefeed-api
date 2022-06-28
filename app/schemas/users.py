@@ -5,7 +5,12 @@ from beanie.odm.views import View
 from fastapi_users import schemas
 from fastapi_users.db import BeanieBaseUser
 from pydantic.fields import Field
+from beanie.odm.documents import Document
+from datetime import datetime
 
+from app.schemas.category import Category
+from app.schemas.ingredients import Ingredient
+from app.schemas.review import Review
 from app.schemas.recipe import Recipe
 
 
@@ -40,5 +45,5 @@ class UserCreate(schemas.BaseUserCreate):
         }
 
 
-# class UserUpdate(schemas.BaseUserUpdate):
-#     recipes: Optional[List[Link[]]] = []
+class UserUpdate(schemas.BaseUserUpdate):
+    recipes: Optional[List[Link[Recipe]]]

@@ -20,7 +20,7 @@ class Review(Document):
     class Settings:
         name = 'reviews'
 
-    class config:
+    class Config:
         schema_extra = {
             'example': {
                 'body': 'str',
