@@ -25,6 +25,7 @@ async def user_recipes(user: User = Depends(current_active_user)):
 
     return user.recipes
 
+
 @router.post('/new', response_description='Add new recipe')
 async def create_recipe(recipe: Recipe, current_user=Depends(current_active_user)):
     new_recipe = await recipe.create()
