@@ -1,3 +1,5 @@
+from http import client
+from typing import List
 from beanie.odm.fields import PydanticObjectId, WriteRules
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
@@ -8,6 +10,8 @@ from app.schemas.category import Category
 from app.schemas.ingredients import Ingredient
 from app.schemas.recipe import Recipe
 from app.schemas.users import User
+from app.schemas.ingredients import Ingredient
+from app.schemas.category import Category
 
 
 router = APIRouter(prefix='/api/v1/recipes', tags=['Recipes'])
@@ -46,6 +50,19 @@ async def create_recipe(
     for ingredient_id in ingredient_ids:
         ingredient = await Ingredient.find_one(Ingredient.id == ingredient_id)
         new_recipe.ingredients.append(ingredient)
+
+    await new_recipe.save(link_rule=WriteRules.WRITE)
+
+
+async def create_recipe(ing: List[PydanticObjectId], category_id: PydanticObjectId, recipe: Recipe, current_user=Depends(current_active_user)) -> dict:
+    new_recipe = await recipe.create()
+
+    for ingredient in ing:
+        list_of_ingredient = await Ingredient.find_one(Ingredient.id == ingredient)
+        new_recipe.ingredients.append(list_of_ingredient)
+
+    category = await Category.find_one(Category.id == category_id)
+    new_recipe.categories.append(category)
 
     await new_recipe.save(link_rule=WriteRules.WRITE)
 

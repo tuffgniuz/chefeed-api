@@ -35,9 +35,9 @@ async def create_category(category: Category, current_user: User = Depends(curre
     await category.create()
 
 
-# @router.post('/{id}', response_description="Add Category to Recipe")
-# async def add_ingredients_to_recipe(id: PydanticObjectId, category_id: PydanticObjectId, current_user=Depends(current_active_user)) -> dict:
-#     recipe = await Recipe.get(id)
-#     category = await Category.find_one(Category.id == category_id)
-#     recipe.categories.append(category)
-#     await recipe.save(link_rule=WriteRules.WRITE)
+@router.post('/{id}', response_description="Add Category to Recipe")
+async def add_ingredients_to_recipe(id: PydanticObjectId, category_id: PydanticObjectId, current_user=Depends(current_active_user)) -> dict:
+    recipe = await Recipe.get(id)
+    category = await Category.find_one(Category.id == category_id)
+    recipe.categories.append(category)
+    await recipe.save(link_rule=WriteRules.WRITE)

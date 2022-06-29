@@ -44,9 +44,22 @@ class UserCreate(schemas.BaseUserCreate):
                 'name': 'Geniuz',
                 'email': 'tuffgniuz@dev.io',
                 'password': '123456',
+                'name': 'str'
             }
         }
 
 
 class UserUpdate(schemas.BaseUserUpdate):
     recipes: Optional[List[Link[Recipe]]]
+    avatar_url: Optional[str]
+    name: Optional[str]
+    biography: Optional[str] = Field(max_length=300)
+
+    class Config:
+        schema_extra = {
+            'example': {
+                'avatar_url': 'str',
+                'name': 'str',
+                'biography': 'str',
+            }
+        }
