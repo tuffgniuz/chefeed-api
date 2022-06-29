@@ -28,12 +28,6 @@ from .api.api_v1.endpoints.users import router as UserRouter
 
 app = FastAPI()
 
-app.include_router(RecipeRouter)
-app.include_router(CategoryRouter)
-app.include_router(IngredientRouter)
-app.include_router(ReviewRouter)
-app.include_router(UserRouter)
-
 app.include_router(
     fastapi_users.get_auth_router(auth_backend), prefix='/auth', tags=['auth']
 )
@@ -42,6 +36,11 @@ app.include_router(
     prefix='/auth',
     tags=['auth']
 )
+app.include_router(RecipeRouter)
+app.include_router(CategoryRouter)
+app.include_router(IngredientRouter)
+app.include_router(ReviewRouter)
+app.include_router(UserRouter)
 
 
 @app.on_event('startup')

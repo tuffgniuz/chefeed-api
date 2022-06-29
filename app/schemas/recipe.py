@@ -26,8 +26,8 @@ class Recipe(Document):
     class Config:
         schema_extra = {
             'example': {
-                'title': '',
-                'description': '',
+                'title': 'Nasi Lemak',
+                'description': 'Nasi lemak yummy yummy yess yess good',
                 'cooking_time': 0,
                 'image_url': 'https://img.freepik.com/free-vector/hand-drawn-nasi-lemak-food-illustrated_23-2148947678.jpg?t=st=1656305024~exp=1656305624~hmac=1686561aea3ace997594c4c61653f385f9997ca5a9d83a7b9e3e381ad6805ad3&w=826',
             }

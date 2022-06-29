@@ -22,6 +22,9 @@ class User(BeanieBaseUser[PydanticObjectId]):
     followers: List[Link['User']] = []
     following: List[Link['User']] = []
 
+    class Settings:
+        name = 'users'
+
 
 class UserRead(schemas.BaseUser[PydanticObjectId]):
     avatar_url: Optional[str]

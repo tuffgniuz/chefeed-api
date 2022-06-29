@@ -11,7 +11,7 @@ bearer_transport = BearerTransport(tokenUrl='auth/login')
 
 
 def get_redis_strategy() -> RedisStrategy:
-    return RedisStrategy(redis, lifetime_seconds=31557600)
+    return RedisStrategy(redis, lifetime_seconds=None)
 
 
 auth_backend = AuthenticationBackend(
