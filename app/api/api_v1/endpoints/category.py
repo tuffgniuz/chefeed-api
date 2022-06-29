@@ -42,12 +42,12 @@ async def create_category(category: Category, current_user=Depends(current_activ
     # return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_category)
     await category.create()
 
-@router.post('/{id}',response_description="Add Category to Recipe")
+""" @router.post('/{id}',response_description="Add Category to Recipe")
 async def add_ingredients_to_recipe(id:PydanticObjectId, category_id: PydanticObjectId, current_user = Depends(current_active_user)) -> dict:
     recipe = await Recipe.get(id)
     category = await Category.find_one(Category.id == category_id)
     recipe.categories.append(category)
-    await recipe.save(link_rule=WriteRules.WRITE)
+    await recipe.save(link_rule=WriteRules.WRITE) """
 
 # @router.delete("/{id}", response_description="Delete category")
 # async def delete_category(id: str, request: Request):
@@ -56,3 +56,4 @@ async def add_ingredients_to_recipe(id:PydanticObjectId, category_id: PydanticOb
 #         return "Category has been successfully deleted"
 #     raise HTTPException(
 #         status_code=404, detail=f"Category with {id} is not found")
+#

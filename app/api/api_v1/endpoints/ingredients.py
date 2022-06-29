@@ -42,14 +42,14 @@ async def create_ingredient(ingredient: Ingredient, current_user=Depends(current
     await ingredient.create()
 
 
-@router.post('/{id}',response_description="Add Ingredients to Recipe")
+""" @router.post('/{id}',response_description="Add Ingredients to Recipe")
 async def add_ingredients_to_recipe(id:PydanticObjectId, ingredients_id: PydanticObjectId, current_user = Depends(current_active_user)) -> dict:
     recipe = await Recipe.get(id)
     ingredients = await Ingredient.find_one(Ingredient.id == ingredients_id)
     recipe.ingredients.append(ingredients)
     await recipe.save(link_rule=WriteRules.WRITE)
 
-#
+# """
 
 # """ DELETE BY ID """
 # @router.delete("/{id}", response_description="Delete Ingredients")

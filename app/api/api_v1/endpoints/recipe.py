@@ -1,5 +1,6 @@
 # import json
 from http import client
+from typing import List
 from beanie.odm.fields import PydanticObjectId, WriteRules
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
@@ -21,6 +22,8 @@ from pymongo import MongoClient
 
 from app.auth.login_manager import current_active_user
 from app.schemas.recipe import Recipe
+from app.schemas.ingredients import Ingredient
+from app.schemas.category import Category
 
 
 
@@ -41,21 +44,35 @@ async def retrieve_recipes() -> list[Recipe]:
 
 
 @router.post('/new', response_description='Add new recipe')
-async def create_recipe(recipe: Recipe, current_user=Depends(current_active_user)) -> dict:
+async def create_recipe(ing: List[PydanticObjectId], category_id: PydanticObjectId,recipe: Recipe, current_user=Depends(current_active_user)) -> dict:
     # new_recipe = await request.app.mongodb['recipes'].insert_one(recipe)
     # created_recipe = await request.app.mongodb['recipes'].find_one({'_id': new_recipe.inserted_id})
     # return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_recipe)
     # print(f'{current_user.id}')
     # recipe.user = current_user.id
+
     new_recipe = await recipe.create()
 
+    #ADD EXiSTED INGREDIENT:
+
+    for ingredient in ing:
+        list_of_ingredient = await Ingredient.find_one(Ingredient.id == ingredient)
+        new_recipe.ingredients.append(list_of_ingredient)
+
+
+    #ADD EXISTED CATEGORY:
+    category = await Category.find_one(Category.id == category_id)
+    new_recipe.categories.append(category)
+
+    await new_recipe.save(link_rule=WriteRules.WRITE)
+
+
     #query = await Recipe.find_one(Recipe.id == new_recipe.id)
-    #await query.set({Recipe.user: current_user.id})
+    #await query.set({Recipe.user: current_user.id})##
 
     current_user.recipes.append(new_recipe)
 
     await current_user.save(link_rule=WriteRules.WRITE)
-
 
 @router.put('/{id}', response_description='Update recipe')
 async def update_recipe(id: PydanticObjectId, request: Recipe) -> Recipe:
