@@ -19,6 +19,8 @@ class Review(Document):
     created_at: datetime = datetime.now()
     updated_at: Optional[date]
     # user: Link[User]
+    predicted_sentiment: Optional[str]
+    sentiment_score: Optional[float]
 
     class Settings:
         name = 'reviews'
@@ -30,7 +32,8 @@ class Review(Document):
             'example': {
                 # 'subject': 'str',
                 'body': 'str',
-                # 'created_at': date.today()
+                # 'created_at': date.today(),
+                # 'predicted_sentiment': 'positive'
             }
         }
 

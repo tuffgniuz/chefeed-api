@@ -22,6 +22,7 @@ class User(BeanieBaseUser[PydanticObjectId]):
     recipes: List[Link[Recipe]] = []
     followers: List[Link['User']] = []
     following: List[Link['User']] = []
+    reviews: List[Link[Review]] = []
 
 
 class UserRead(schemas.BaseUser[PydanticObjectId]):
