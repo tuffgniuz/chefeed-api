@@ -12,6 +12,7 @@ from .api.api_v1.endpoints.User.user_auth import router as AuthenticationRouter
 from .api.api_v1.endpoints.category import router as CategoryRouter
 from .api.api_v1.endpoints.ingredients import router as IngredientRouter
 from .api.api_v1.endpoints.bookmark import router as BookmarkRouter
+from .api.api_v1.endpoints.sa import router as SentimentRouter
 # from .api.api_v1.endpoints.review import review as ReviewRouter
 
 from .config import settings
@@ -40,6 +41,6 @@ app.include_router(RecipeRouter)
 app.include_router(CategoryRouter)
 app.include_router(IngredientRouter)
 app.include_router(BookmarkRouter)
-
+app.include_router(SentimentRouter)
 
 # Testing Fastapi-User BUt Failed coz yikes
