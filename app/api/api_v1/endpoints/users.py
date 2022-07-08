@@ -42,19 +42,32 @@ async def update_user(id:PydanticObjectId,request:UserUpdate, current_user = Dep
 
 #post following
 @router.post('/{id}/follow',response_description="Follow User")
-async def follow_user(followed_user_id: PydanticObjectId, current_user = Depends(current_active_user)):
-    user = await User.get(followed_user_id)
-    if user.id not in current_user.following:
-        current_user.following.append(user)
-        await current_user.save(link_rule=WriteRules.WRITE)
-        cu = await User.get(current_user.id)
-        user.followers.append(cu)
-        await user.save(link_rule=WriteRules.WRITE) 
-
-    return JSONResponse(detail="You followed the user already")
+async def follow_user(current_user = Depends(current_active_user)):
+    user_id = {
+        "id":"62bc243629c5f50ae3fab7a9",
+        "collection": "User"
+    }
+    cu = await User.get(current_user.id, fetch_links=True)
+    #for i in cu.following:
+    if (user_id in cu.following):
+        return True
+    else:
+        return cu
+    ###
+    #for i in current_user.following.id:
+    #    if i == followed_user_id:
+    #        return JSONResponse(status_code=409, content="You Followed The User Already")
+    #    else:
+    #        user = await User.find_one(User.id == followed_user_id)
+    #        current_user.following.append(user)
+    #        await current_user.save(link_rule=WriteRules.WRITE)
+    #        cu = await User.get(current_user.id)
+    #        user.followers.append(cu)
+    #        await user.save(link_rule=WriteRules.WRITE)
+    #        return JSONResponse(status_code=200, content="User Followed")
     #
     
-    
+   
     
 
 

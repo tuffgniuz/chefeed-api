@@ -20,6 +20,7 @@ class User(BeanieBaseUser[PydanticObjectId]):
     name: str = Field(...)
     biography: Optional[str] = Field(max_length=300)
     recipes: List[Link[Recipe]] = []
+    #recipes: List[Recipe] = []
     followers: List[Link['User']] = []
     following: List[Link['User']] = []
     reviews: List[Link[Review]] = []

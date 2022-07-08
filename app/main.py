@@ -4,7 +4,7 @@ from beanie import init_beanie
 from app.db import db
 from app.schemas.category import Category
 from app.schemas.ingredients import Ingredient
-from app.schemas.recipe import Recipe
+from app.schemas.recipe import Recipe, UpdateRecipe
 from app.schemas.users import User, UserCreate, UserRead
 from app.schemas.review import Review
 from app.auth.auth_backend import auth_backend

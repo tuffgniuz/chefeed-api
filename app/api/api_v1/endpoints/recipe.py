@@ -1,6 +1,7 @@
 # import json
 from http import client
 from typing import List
+from beanie import DeleteRules
 from beanie.odm.fields import PydanticObjectId, WriteRules
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
@@ -21,9 +22,10 @@ from pymongo import MongoClient
 # from ....schemas.recipe import RecipeSchema, RecipeUpdateSchema, ReviewSchema
 
 from app.auth.login_manager import current_active_user
-from app.schemas.recipe import Recipe
+from app.schemas.recipe import Recipe, UpdateRecipe
 from app.schemas.ingredients import Ingredient
 from app.schemas.category import Category
+from app.schemas.users import User
 
 
 
@@ -74,12 +76,14 @@ async def create_recipe(ing: List[PydanticObjectId], category_id: PydanticObject
 
     await current_user.save(link_rule=WriteRules.WRITE)
 
+    return recipe
+
 @router.put('/{id}', response_description='Update recipe')
-async def update_recipe(id: PydanticObjectId, request: Recipe) -> Recipe:
-    request = {key: value for key, value in recipe.dict().items()
+async def update_recipe(id: PydanticObjectId, request: UpdateRecipe, current_user = Depends(current_active_user)) -> Recipe:
+    request = {key: value for key, value in request.dict().items()
                if value is not None}
     update_query = {'$set': {
-        field: value for field, value in recipe.items()
+        field: value for field, value in request.items()
     }}
 
     recipe = await Recipe.get(id)
@@ -107,6 +111,24 @@ async def show_reviews_recipe(id:PydanticObjectId) -> Recipe:
     if recipe is None:
         return HTTPException(status_code=204, detail='No Reviews')
     return recipe
+
+@router.delete("/{id}", response_description="Delete Recipe" )
+async def delete_recipe(id:PydanticObjectId,current_user=Depends(current_active_user))-> dict:
+    recipe = await Recipe.get(id)
+    if not recipe:
+        raise HTTPException(
+            status_code=404,
+            detail="Recipe not found!"
+        )
+    #current_user.recipes.id = id
+    #await current_user.delete(link_rule=DeleteRules.DELETE_LINKS)
+
+    #current_user.recipes.remove(recipe)
+
+    await recipe.delete()
+    return {
+        "message": "Recipe deleted successfully"
+    }
  
 ######
 
