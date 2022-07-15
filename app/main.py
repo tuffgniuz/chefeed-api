@@ -6,7 +6,7 @@ from app.schemas.category import Category
 from app.schemas.ingredients import Ingredient
 from app.schemas.recipe import Recipe
 from app.schemas.review import Review
-from app.schemas.users import User, UserCreate, UserRead
+from app.schemas.users import User, UserCreate, UserRead, UserUpdate
 from app.schemas.review import Review
 from app.auth.auth_backend import auth_backend
 from app.auth.login_manager import fastapi_users
@@ -18,13 +18,6 @@ from .api.api_v1.endpoints.ingredients import router as IngredientRouter
 from .api.api_v1.endpoints.review import router as ReviewRouter
 from .api.api_v1.endpoints.users import router as UserRouter
 
-# #from .api.api_v1.endpoints.bookmark import router as BookmarksRouter
-# #from .api.api_v1.endpoints.User.register import router as UserRegisterRouter
-# from .api.api_v1.endpoints.User.user_auth import router as AuthenticationRouter
-# from .api.api_v1.endpoints.bookmark import router as BookmarkRouter
-# # from .api.api_v1.endpoints.review import review as ReviewRouter
-#
-# from .config import settings
 
 app = FastAPI()
 
@@ -35,6 +28,11 @@ app.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),
     prefix='/auth',
     tags=['auth']
+)
+app.include_router(
+    fastapi_users.get_users_router(UserRead, UserUpdate),
+    prefix='/users',
+    tags=['users'],
 )
 app.include_router(RecipeRouter)
 app.include_router(CategoryRouter)
@@ -49,22 +47,3 @@ async def on_startup():
         database=db,
         document_models=[User, Recipe, Ingredient, Category, Review]
     )
-
-# @app.on_event('startup')
-# async def startup_db_client():
-#     app.mongo_client = AsyncIOMotorClient(settings.DB_URL)
-#     app.mongodb = app.mongo_client.chefeed_db
-
-
-# @app.on_event('shutdown')
-# async def shutdown_db_client():
-#     app.mongo_client.close()
-
-
-# app.include_router(RecipeRouter)
-# app.include_router(CategoryRouter)
-# app.include_router(IngredientRouter)
-# app.include_router(BookmarkRouter)
-
-
-# Testing Fastapi-User BUt Failed coz yikes

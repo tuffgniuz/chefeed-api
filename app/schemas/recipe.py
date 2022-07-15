@@ -10,7 +10,7 @@ from app.schemas.review import Review
 
 
 class Recipe(Document):
-    # user: Optional[Indexed(PydanticObjectId)]
+    # user_id: Indexed(PydanticObjectId)
     title: str = Field(...)
     description: str = Field(max_length=350)
     cooking_time: int = Field(...)
