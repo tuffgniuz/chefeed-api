@@ -1,11 +1,13 @@
 import motor.motor_asyncio
+
 from fastapi_users.db import BeanieUserDatabase
 
-from app.config.settings import DB_URL
-from app.schemas.users import User
+from app.models.user import User
+from app.config.settings import MONGO_DB_URL
 
 client = motor.motor_asyncio.AsyncIOMotorClient(
-    DB_URL, uuidRepresentation='standard'
+    MONGO_DB_URL,
+    uuidRepresentation='standard'
 )
 db = client['chefeed-db']
 

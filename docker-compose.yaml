@@ -8,14 +8,17 @@ services:
     hostname: mongodb
     volumes:
       - ./.mongodb/data/db/:/data/db/
+      - ./docker_scripts/:/docker-entrypoint-initdb.d
     #   - ./.mongodb/mongod.conf:/etc/mongod.conf
-    #   - ./.mongodb/initdb.d/:/docker-entrypoint-initdb.d/
     #   - ./.mongodb/data/log/:/var/log/mongodb/
     env_file:
       - .env
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - 27017:27017
     # command: ["-f", "/etc/mongod.conf"]
