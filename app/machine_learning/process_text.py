@@ -43,13 +43,13 @@ def text_preprocessing(text):
     text = re.sub('[^A-Za-z0-9 ]+', '', text)
     text =  np.array(text.split(" "))  
  
-    filtered_text = remove_sw(text) 
+    # filtered_text = remove_sw(text) 
 
-    lemmatized_token = lemmatize_token(filtered_text) 
+    lemmatized_token = lemmatize_token(text) 
 
     tokenizer = Tokenizer(num_words=5000)
     tokenizer.fit_on_texts(text)
-    print(lemmatized_token)
+    # print(lemmatized_token)
 
     token_array = np.array(lemmatized_token)
 

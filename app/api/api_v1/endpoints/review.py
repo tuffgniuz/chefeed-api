@@ -21,11 +21,17 @@ async def retrieve_reviews() -> list[Review]:
 
     return review_list
 
-@router.post('/{id}',response_description="Add Review to Recipe")
+@router.post('/{id}',response_description="Add Review to Recipe", status_code=200)
 async def create_review(review:Review, recipe_id:PydanticObjectId, current_user = Depends(current_active_user)) -> dict:
     
-    text_processed = text_preprocessing(review.body) 
-    model = load_model('/src/app/machine_learning/gru_embed_tuned.h5') 
+    text = review.body
+    word_count = len(text.replace(" ", "")) 
+
+    if word_count > 150: 
+        raise HTTPException(status_code=400, detail='Review must be shorter than 150 words!')
+
+    text_processed = text_preprocessing(text)  
+    model = load_model('/src/app/machine_learning/lstm_embed_tuned_valloss_ext2.h5') 
     pred = model.predict(text_processed)
     pred_sentiment = 'positive' 
     pred_score = float(pred[0,0])
@@ -41,6 +47,10 @@ async def create_review(review:Review, recipe_id:PydanticObjectId, current_user 
 
 
     recipe = await Recipe.get(recipe_id)
+
+    if review is None:
+        raise HTTPException(status_code=404, detail=f"Recipe does not exist with id {recipe_id}")
+
     recipe.reviews.append(new_review)
     await recipe.save(link_rule=WriteRules.WRITE)
 
