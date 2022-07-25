@@ -1,14 +1,14 @@
-from typing import Optional
+from typing import Optional, Union
 from beanie.odm.fields import PydanticObjectId
 from fastapi import Depends, Request
-from fastapi_users import BaseUserManager
+from fastapi_users import BaseUserManager, InvalidPasswordException
 from fastapi_users.fastapi_users import FastAPIUsers
 from fastapi_users_db_beanie import ObjectIDIDMixin
 
 from app.auth.auth_backend import auth_backend
 from app.db import get_user_db
 from app.config.settings import SECRET_KEY
-from app.schemas.users import User
+from app.schemas.users import User, UserCreate, UserUpdate
 
 
 class UserManager(ObjectIDIDMixin, BaseUserManager[User, PydanticObjectId]):
@@ -23,6 +23,14 @@ class UserManager(ObjectIDIDMixin, BaseUserManager[User, PydanticObjectId]):
 
     async def on_after_request_verify(self, user: User, token: str, request: Optional[Request] = None):
         print(f'Verification requested for user {user.id}.')
+
+    async def validate_password(self, password: str, user: Union[UserCreate, UserUpdate]) -> None:
+        if len(password) < 8:
+            raise InvalidPasswordException(
+                reason='Password should be atleast 8 characters')
+        if user.email in password:
+            raise InvalidPasswordException(
+                reason='Password should not contain e-mail')
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
