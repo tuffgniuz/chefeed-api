@@ -16,6 +16,9 @@ class Review(Document):
     body: str = Field(...)
     created_at: datetime = datetime.now()
     updated_at: Optional[date]
+    # user: Link[User]
+    predicted_sentiment: Optional[str]
+    sentiment_score: Optional[float]
 
     class Settings:
         name = 'reviews'

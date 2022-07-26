@@ -8,6 +8,8 @@ from app.schemas.ingredients import Ingredient
 from app.schemas.recipe import Recipe
 from app.schemas.review import Review
 from app.schemas.users import User, UserCreate, UserRead, UserUpdate
+from app.schemas.recipe import Recipe, UpdateRecipe
+from app.schemas.users import User, UserCreate, UserRead
 from app.schemas.review import Review
 from app.auth.auth_backend import auth_backend
 from app.auth.login_manager import fastapi_users

@@ -8,7 +8,9 @@ COPY requirements.txt ./
 
 RUN pip install --no-cache-dir --upgrade pip
 
-RUN pip install --no-cache-dir --upgrade -r requirements.txt
+RUN pip install --no-cache-dir --upgrade -r requirements.txt 
+
+RUN python -c "import nltk; nltk.download('stopwords');nltk.download('omw-1.4');nltk.download('wordnet')"
 
 COPY . .
 
