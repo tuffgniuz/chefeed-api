@@ -1,5 +1,6 @@
 # import json
 from http import client
+from typing import List
 from beanie.odm.fields import PydanticObjectId, WriteRules
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
@@ -10,6 +11,8 @@ from pymongo import MongoClient
 from app.auth.login_manager import current_active_user
 from app.schemas.recipe import Recipe
 from app.schemas.users import User
+from app.schemas.ingredients import Ingredient
+from app.schemas.category import Category
 
 
 router = APIRouter(prefix='/api/v1/recipes', tags=['Recipes'])
@@ -37,6 +40,27 @@ async def user_recipes(user: User = Depends(current_active_user)):
 @router.post('/new', response_description='Add new recipe')
 async def create_recipe(recipe: Recipe, current_user=Depends(current_active_user)):
     new_recipe = await recipe.create()
+
+
+@router.post('/new', response_description='Add new recipe')
+async def create_recipe(
+        # ing: List[PydanticObjectId],
+        category_id: PydanticObjectId, recipe:
+        Recipe, current_user=Depends(current_active_user)) -> None:
+
+    new_recipe = await recipe.create()
+
+    # ADD EXiSTED INGREDIENT:
+
+    # for ingredient in ing:
+    #     list_of_ingredient = await Ingredient.find_one(Ingredient.id == ingredient)
+    #     new_recipe.ingredients.append(list_of_ingredient)
+
+    # ADD EXISTED CATEGORY:
+    category = await Category.find_one(Category.id == category_id)
+    new_recipe.categories.append(category)
+
+    await new_recipe.save(link_rule=WriteRules.WRITE)
 
     current_user.recipes.append(new_recipe)
 
