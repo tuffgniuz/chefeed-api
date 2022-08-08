@@ -13,33 +13,34 @@ from app.db import get_user_db
 from app.models.user import User, UserCreate, UserUpdate
 
 
-class UserManager(ObjectIDIDMixin, BaseUserManager[User, ObjectIDIDMixin]):
+class UserManager(ObjectIDIDMixin, BaseUserManager[User, PydanticObjectId]):
     reset_password_token_secret = SECRET_KEY
     verification_token_secret = SECRET_KEY
 
-    async def on_after_register(self, user: User, request: Optional[Request] = None) -> None:
-        print(f'{user.id} has been created')
+    # async def on_after_register(self, user: User, request: Optional[Request] = None) -> None:
+    #     print(f'{user.id} has been created')
 
-    async def on_after_request_verify(self, user: UserUpdate, token: str, request: Optional[Request] = None) -> None:
-        print(f'Verificationr equested for {user.id}')
+    # async def on_after_request_verify(self, user: UserUpdate, token: str, request: Optional[Request] = None) -> None:
+    #     print(f'Verificationr equested for {user.id}')
 
-    # async def validate_password(self, password: str, user: Union[UserCreate, UserUpdate]) -> None:
-    #     if len(password) < 8:
-    #         raise InvalidPasswordException(
-    #             reason='Password should be at least 8 characters')
-    #     if user.email in password:
-    #         raise InvalidPasswordException(
-    #             reason='Password should not contain e-mail'
-    #         )
+    async def validate_password(self, password: str, user: Union[UserCreate, UserUpdate]) -> None:
+        if len(password) < 8:
+            raise InvalidPasswordException(
+                reason='Password should be at least 8 characters')
+        if user.email in password:
+            raise InvalidPasswordException(
+                reason='Password should not contain e-mail'
+            )
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):
     yield UserManager(user_db)
 
-redis = redis.asyncio.from_url(
-    f'redis://{REDIS_HOST}:{REDIS_PORT}', decode_responses=True)
 
 bearer_transport = BearerTransport(tokenUrl='auth/redis/login')
+
+redis = redis.asyncio.from_url(
+    f'redis://{REDIS_HOST}:{REDIS_PORT}', decode_responses=True)
 
 
 def get_redis_strategy() -> RedisStrategy:

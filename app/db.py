@@ -1,5 +1,4 @@
 import motor.motor_asyncio
-
 from fastapi_users.db import BeanieUserDatabase
 
 from app.models.user import User

@@ -3,17 +3,23 @@ from beanie import Link, PydanticObjectId
 from fastapi_users import schemas
 from fastapi_users.db import BeanieBaseUser
 
+from app.models.recipe import Recipe
+
 
 class User(BeanieBaseUser[PydanticObjectId]):
-    avatar_url: Optional[str] = None
-    name: Optional[str] = None
-    biography: Optional[str] = None
+    avatar_url: Optional[str]
+    name: Optional[str]
+    biography: Optional[str]
+
+    recipe_ids: list[Link[Recipe]] = []
 
 
 class UserRead(schemas.BaseUser[PydanticObjectId]):
     pass
-    # avatar_url: Optional[str]
-    # biography: Optional[str]
+    # name: Optiona[]
+    # biography: str
+    # avatar_url: str
+    # recipe_ids: list[Link[Recipe]]
 
 
 class UserCreate(schemas.BaseUserCreate):
@@ -23,7 +29,7 @@ class UserCreate(schemas.BaseUserCreate):
         schema_extra = {
             'example': {
                 'email': 'tuffgniuz@wu.tang',
-                'password': '12345678'
+                'password': '12345678',
             }
         }
 

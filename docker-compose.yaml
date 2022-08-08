@@ -9,8 +9,6 @@ services:
     volumes:
       - ./.mongodb/data/db/:/data/db/
       - ./docker_scripts/:/docker-entrypoint-initdb.d
-    #   - ./.mongodb/mongod.conf:/etc/mongod.conf
-    #   - ./.mongodb/data/log/:/var/log/mongodb/
     env_file:
       - .env
     environment:
@@ -21,10 +19,8 @@ services:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - 27017:27017
-    # command: ["-f", "/etc/mongod.conf"]
     restart: on-failure
   
-  # redis db for auth token storage
   cache:
     image: redis:latest
     container_name: cache
@@ -35,7 +31,6 @@ services:
     volumes:
       - cache:/data 
 
-  # build the application
   app:
     build: .
     container_name: chefeed-api
